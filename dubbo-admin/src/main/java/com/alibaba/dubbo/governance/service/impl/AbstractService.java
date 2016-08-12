@@ -28,7 +28,7 @@ import com.alibaba.dubbo.registry.RegistryService;
 /**
  * IbatisDAO
  * 
- * @author william.liangf
+ * @author william.liangf1
  */
 public class AbstractService {
 
