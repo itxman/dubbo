@@ -21,6 +21,7 @@ import com.alibaba.dubbo.common.extension.ExtensionLoader;
 import com.alibaba.dubbo.common.serialize.Serialization;
 import com.alibaba.dubbo.common.status.StatusChecker;
 import com.alibaba.dubbo.common.threadpool.ThreadPool;
+import com.alibaba.dubbo.common.utils.NetUtils;
 import com.alibaba.dubbo.config.support.Parameter;
 import com.alibaba.dubbo.registry.support.AbstractRegistryFactory;
 import com.alibaba.dubbo.remoting.Dispatcher;
@@ -156,6 +157,7 @@ public class ProtocolConfig extends AbstractConfig {
 
     public void setHost(String host) {
         checkName("host", host);
+        host = NetUtils.getIpByHost(host);
         this.host = host;
     }
 

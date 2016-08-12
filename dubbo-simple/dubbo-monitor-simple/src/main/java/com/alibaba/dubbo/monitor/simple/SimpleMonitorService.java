@@ -15,38 +15,6 @@
  */
 package com.alibaba.dubbo.monitor.simple;
 
-import java.awt.Color;
-import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-
-import javax.imageio.ImageIO;
-
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.DateAxis;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.data.time.Minute;
-import org.jfree.data.time.TimeSeries;
-import org.jfree.data.time.TimeSeriesCollection;
-
 import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.common.logger.Logger;
@@ -55,6 +23,30 @@ import com.alibaba.dubbo.common.utils.ConfigUtils;
 import com.alibaba.dubbo.common.utils.NamedThreadFactory;
 import com.alibaba.dubbo.common.utils.NetUtils;
 import com.alibaba.dubbo.monitor.MonitorService;
+import com.alibaba.dubbo.monitor.simple.dao.MonitorDAO;
+import com.alibaba.dubbo.monitor.simple.entity.CollectMessage;
+import com.xkeshi.core.context.ApplicationContextHelper;
+import org.apache.commons.lang3.StringUtils;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.DateAxis;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.data.time.Minute;
+import org.jfree.data.time.TimeSeries;
+import org.jfree.data.time.TimeSeriesCollection;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.*;
 
 /**
  * SimpleMonitorService
@@ -94,7 +86,7 @@ public class SimpleMonitorService implements MonitorService {
     public String getStatisticsDirectory() {
         return statisticsDirectory;
     }
-    
+
     public void setStatisticsDirectory(String statistics) {
         if (statistics != null) {
             this.statisticsDirectory = statistics;
@@ -159,6 +151,7 @@ public class SimpleMonitorService implements MonitorService {
     
     private void write() throws Exception {
         URL statistics = queue.take();
+        writeToDatabase(statistics);
         if (POISON_PROTOCOL.equals(statistics.getProtocol())) {
             return;
         }
@@ -218,6 +211,36 @@ public class SimpleMonitorService implements MonitorService {
                 logger.error(t.getMessage(), t);
             }
         }
+    }
+
+    /**
+     * 将统计数据写入数据库
+     *
+     * @param statistics
+     */
+    private void writeToDatabase(URL statistics) {
+        MonitorDAO monitorDAO = ApplicationContextHelper.getContext().getBean(MonitorDAO.class);
+        CollectMessage message = new CollectMessage();
+        String providerAddress = statistics.getParameter(MonitorService.PROVIDER);
+        if (StringUtils.isNotEmpty(providerAddress)) {
+            message.setType(MonitorService.PROVIDER);
+            message.setAddress(providerAddress);
+        } else {
+            message.setType(MonitorService.CONSUMER);
+            message.setAddress(statistics.getParameter(MonitorService.CONSUMER));
+        }
+        message.setElapsed(Long.valueOf(statistics.getParameter(MonitorService.ELAPSED)));
+        message.setConcurrent(Integer.valueOf(statistics.getParameter(MonitorService.CONCURRENT)));
+        message.setApplication(statistics.getParameter(MonitorService.APPLICATION));
+        message.setService(statistics.getParameter(MonitorService.INTERFACE));
+        message.setMethod(statistics.getParameter(MonitorService.METHOD));
+        message.setInput(statistics.getParameter(MonitorService.INPUT));
+        message.setOutput(statistics.getParameter(MonitorService.OUTPUT));
+        message.setMaxInput(statistics.getParameter(MonitorService.MAX_INPUT));
+        message.setMaxOutput(statistics.getParameter(MonitorService.MAX_OUTPUT));
+        message.setSuccess(Integer.valueOf(statistics.getParameter(MonitorService.SUCCESS)));
+        message.setFailure(Integer.valueOf(statistics.getParameter(MonitorService.FAILURE)));
+        monitorDAO.saveMessage(message);
     }
 
     private void draw() {
