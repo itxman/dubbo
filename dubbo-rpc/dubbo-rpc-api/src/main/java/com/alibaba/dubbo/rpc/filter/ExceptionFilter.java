@@ -83,6 +83,20 @@ public class ExceptionFilter implements Filter {
                         return result;
                     }
 
+                    // 是Dubbo本身的异常，直接抛出
+                    if (exception instanceof RpcException) {
+                        if (((RpcException) exception).getCode() == 3) {
+                            logger.info("业务异常，called by " + RpcContext.getContext().getRemoteHost()
+                                    + ". service: " + invoker.getInterface().getName() + ", method: " + invocation.getMethodName()
+                                    + ", exception: " + exception.getClass().getName() + ": " + exception.getMessage());
+                        } else {
+                            logger.error("Got unchecked and undeclared exception which called by " + RpcContext.getContext().getRemoteHost()
+                                    + ". service: " + invoker.getInterface().getName() + ", method: " + invocation.getMethodName()
+                                    + ", exception: " + exception.getClass().getName() + ": " + exception.getMessage(), exception);
+                        }
+                        return result;
+                    }
+
                     // 未在方法签名上定义的异常，在服务器端打印ERROR日志
                     logger.error("Got unchecked and undeclared exception which called by " + RpcContext.getContext().getRemoteHost()
                             + ". service: " + invoker.getInterface().getName() + ", method: " + invocation.getMethodName()
@@ -99,11 +113,6 @@ public class ExceptionFilter implements Filter {
                     if (className.startsWith("java.") || className.startsWith("javax.")) {
                         return result;
                     }
-                    // 是Dubbo本身的异常，直接抛出
-                    if (exception instanceof RpcException) {
-                        return result;
-                    }
-
                     // 否则，包装成RuntimeException抛给客户端
                     return new RpcResult(new RuntimeException(StringUtils.toString(exception)));
                 } catch (Throwable e) {

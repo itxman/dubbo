@@ -190,7 +190,7 @@ public class AccessLogFilter implements Filter {
                 }
                 String msg = sn.toString();
                 if (ConfigUtils.isDefault(accesslog)) {
-                    LoggerFactory.getLogger(ACCESS_LOG_KEY + "." + invoker.getInterface().getName()).info(msg);
+                    LoggerFactory.getLogger(ACCESS_LOG_KEY + "." + invoker.getInterface().getName()).debug(msg);
                 } else {
                     log(accesslog, msg);
                 }
