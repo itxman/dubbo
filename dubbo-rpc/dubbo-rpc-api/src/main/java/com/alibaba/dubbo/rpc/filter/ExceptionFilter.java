@@ -85,8 +85,8 @@ public class ExceptionFilter implements Filter {
 
                     // 是Dubbo本身的异常，直接抛出
                     if (exception instanceof RpcException) {
-                        if (((RpcException) exception).getCode() == 3) {
-                            logger.info("业务异常，called by " + RpcContext.getContext().getRemoteHost()
+                        if (((RpcException) exception).getCode() == RpcException.BIZ_EXCEPTION) {
+                            logger.info("BIZ_EXCEPTION，called by " + RpcContext.getContext().getRemoteHost()
                                     + ". service: " + invoker.getInterface().getName() + ", method: " + invocation.getMethodName()
                                     + ", exception: " + exception.getClass().getName() + ": " + exception.getMessage());
                         } else {
