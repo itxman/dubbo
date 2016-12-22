@@ -38,5 +38,55 @@
 	<dubbo:service interface="com.alibaba.dubbo.monitor.MonitorService" ref="monitorService" delay="-1" />
 	
 	<dubbo:reference id="registryService" interface="com.alibaba.dubbo.registry.RegistryService" />
-	
+
+    <bean class="com.xkeshi.core.context.ApplicationContextHelper"/>
+
+    <bean id="simpleMonitorService" class="com.alibaba.dubbo.monitor.simple.SimpleMonitorService"/>
+
+    <bean id="monitorDAO" class="com.alibaba.dubbo.monitor.simple.dao.MonitorDAO">
+        <property name="jdbcTemplate">
+            <ref bean="jdbcTemplate" />
+        </property>
+    </bean>
+
+    <bean id="jdbcTemplate"
+          class="org.springframework.jdbc.core.JdbcTemplate" abstract="false"
+          lazy-init="false" autowire="default">
+        <property name="dataSource">
+            <ref bean="xBusinessDatasource" />
+        </property>
+    </bean>
+
+    <!-- =====================================Business datasource start=====================================-->
+    <bean id="xBusinessDatasource" class="com.alibaba.druid.pool.DruidDataSource"
+          destroy-method="close">
+        <property name="driverClassName" value="${jdbc.driver}" />
+        <property name="url"
+                  value="${business.jdbc.url}" />
+        <property name="username" value="${business.jdbc.user}" />
+        <property name="password" value="${business.jdbc.password}" />
+        <!-- Connection Pooling Info -->
+        <property name="filters" value="wall,stat,log4j" />
+        <property name="maxActive" value="${business.jdbc.pool.maxActive}" />
+        <property name="initialSize" value="${business.jdbc.pool.initialSize}" />
+        <property name="maxWait" value="${business.jdbc.pool.maxWait}" />
+        <property name="minIdle" value="${business.jdbc.pool.minIdle}" />
+        <property name="timeBetweenEvictionRunsMillis" value="${business.jdbc.pool.timeBetweenEvictionRunsMillis}" />
+        <property name="minEvictableIdleTimeMillis" value="${business.jdbc.pool.minEvictableIdleTimeMillis}" />
+        <property name="validationQuery" value="SELECT 'x'" />
+        <property name="testWhileIdle" value="true" />
+        <property name="testOnBorrow" value="false" />
+        <property name="testOnReturn" value="false" />
+        <property name="maxPoolPreparedStatementPerConnectionSize"
+                  value="${business.jdbc.pool.maxPoolPreparedStatementPerConnectionSize}" />
+        <!--监控信息输出到日志的时间-->
+        <property name="timeBetweenLogStatsMillis" value="300000" />
+        <!-- 超过时间限制是否回收 -->
+        <property name="removeAbandoned" value="true" />
+        <!-- 超时时间；单位为秒。180秒=3分钟 -->
+        <property name="removeAbandonedTimeout" value="180" />
+        <!-- 关闭abanded连接时输出错误日志 -->
+        <property name="logAbandoned" value="true" />
+    </bean>
+
 </beans>
