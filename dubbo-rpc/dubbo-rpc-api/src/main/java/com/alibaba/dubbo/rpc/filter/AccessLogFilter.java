@@ -150,6 +150,7 @@ public class AccessLogFilter implements Filter {
     }
 
     public Result invoke(Invoker<?> invoker, Invocation inv) throws RpcException {
+        Result result = invoker.invoke(inv);
         try {
             String accesslog = invoker.getUrl().getParameter(Constants.ACCESS_LOG_KEY);
             if (ConfigUtils.isNotEmpty(accesslog)) {
@@ -188,9 +189,16 @@ public class AccessLogFilter implements Filter {
                 if (args != null && args.length > 0) {
                     sn.append(JSON.json(args));
                 }
+
+                // add by gqw 2017-01-20
+                // 添加日志出参
+                if (!result.hasException()) {
+                    sn.append(",return=>").append(JSON.json(result.getValue()));
+                }
+
                 String msg = sn.toString();
                 if (ConfigUtils.isDefault(accesslog)) {
-                    LoggerFactory.getLogger(ACCESS_LOG_KEY + "." + invoker.getInterface().getName()).debug(msg);
+                    LoggerFactory.getLogger(ACCESS_LOG_KEY + "." + invoker.getInterface().getName()).info(msg);
                 } else {
                     log(accesslog, msg);
                 }
@@ -198,7 +206,7 @@ public class AccessLogFilter implements Filter {
         } catch (Throwable t) {
             logger.warn("Exception in AcessLogFilter of service(" + invoker + " -> " + inv + ")", t);
         }
-        return invoker.invoke(inv);
+        return result;
     }
 
 }
