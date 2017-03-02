@@ -78,9 +78,9 @@ public class AccessLogFilter implements Filter {
 
     private static final String TIME_PREFIX = "TIME=";
 
-    private static final String PRAMETERS_PREFIX = "PRAMETERS=";
+    private static final String PRAMETERS_PREFIX = "PARAMETERS=";
 
-    private static final String RETRUN_PREFIX = "RETRUN=";
+    private static final String RETRUN_PREFIX = "RETURN=";
 
     private static final String OTHER_INFO_PREFIX = "OTHER=";
 
