@@ -219,6 +219,15 @@ public class SimpleMonitorService implements MonitorService {
      * @param statistics
      */
     private void writeToDatabase(URL statistics) {
+        Long elapsed = Long.valueOf(statistics.getParameter(MonitorService.ELAPSED));
+        Integer success = Integer.valueOf(statistics.getParameter(MonitorService.SUCCESS));
+        Integer failure = Integer.valueOf(statistics.getParameter(MonitorService.FAILURE));
+
+        //无调用统计信息不入库
+        if (success == 0 && failure == 0 && elapsed.equals(0l)) {
+            return;
+        }
+
         MonitorDAO monitorDAO = ApplicationContextHelper.getContext().getBean(MonitorDAO.class);
         CollectMessage message = new CollectMessage();
         String providerAddress = statistics.getParameter(MonitorService.PROVIDER);
@@ -229,7 +238,7 @@ public class SimpleMonitorService implements MonitorService {
             message.setType(MonitorService.CONSUMER);
             message.setAddress(statistics.getParameter(MonitorService.CONSUMER));
         }
-        message.setElapsed(Long.valueOf(statistics.getParameter(MonitorService.ELAPSED)));
+        message.setElapsed(elapsed);
         message.setConcurrent(Integer.valueOf(statistics.getParameter(MonitorService.CONCURRENT)));
         message.setApplication(statistics.getParameter(MonitorService.APPLICATION));
         message.setService(statistics.getParameter(MonitorService.INTERFACE));
@@ -238,8 +247,8 @@ public class SimpleMonitorService implements MonitorService {
         message.setOutput(statistics.getParameter(MonitorService.OUTPUT));
         message.setMaxInput(statistics.getParameter(MonitorService.MAX_INPUT));
         message.setMaxOutput(statistics.getParameter(MonitorService.MAX_OUTPUT));
-        message.setSuccess(Integer.valueOf(statistics.getParameter(MonitorService.SUCCESS)));
-        message.setFailure(Integer.valueOf(statistics.getParameter(MonitorService.FAILURE)));
+        message.setSuccess(success);
+        message.setFailure(failure);
         monitorDAO.saveMessage(message);
     }
 
