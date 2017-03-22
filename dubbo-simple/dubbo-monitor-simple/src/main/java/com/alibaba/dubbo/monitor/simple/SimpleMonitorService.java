@@ -238,7 +238,7 @@ public class SimpleMonitorService implements MonitorService {
             message.setType(MonitorService.CONSUMER);
             message.setAddress(statistics.getParameter(MonitorService.CONSUMER));
         }
-        message.setElapsed(elapsed);
+        message.setElapsed((success + failure) == 0 ? elapsed : elapsed / (success + failure));
         message.setConcurrent(Integer.valueOf(statistics.getParameter(MonitorService.CONCURRENT)));
         message.setApplication(statistics.getParameter(MonitorService.APPLICATION));
         message.setService(statistics.getParameter(MonitorService.INTERFACE));
