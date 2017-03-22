@@ -5,6 +5,6 @@ package com.alibaba.dubbo.monitor.simple.constant;
  */
 public class MonitorDAOSql {
 
-    public static final String MONITOR_SAVE_SQL = "INSERT INTO pre_monitor_message (address,type,elapsed,concurrent,application,service,method,success,failure,input,output,max_input,max_output) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public static final String MONITOR_SAVE_SQL = "INSERT INTO %s (address,type,elapsed,concurrent,application,service,method,success,failure,input,output,max_input,max_output) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 }

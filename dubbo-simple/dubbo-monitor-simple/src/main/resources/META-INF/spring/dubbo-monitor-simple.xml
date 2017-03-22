@@ -47,6 +47,7 @@
         <property name="jdbcTemplate">
             <ref bean="jdbcTemplate" />
         </property>
+        <property name="messageSaveTable" value="${messag.save.table}"/>
     </bean>
 
     <bean id="jdbcTemplate"
