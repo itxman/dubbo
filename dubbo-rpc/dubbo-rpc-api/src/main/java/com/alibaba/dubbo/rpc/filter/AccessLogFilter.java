@@ -37,6 +37,7 @@ import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
 import com.alibaba.dubbo.common.utils.ConfigUtils;
 import com.alibaba.dubbo.common.utils.NamedThreadFactory;
+import com.alibaba.dubbo.common.utils.StringUtils;
 import com.alibaba.dubbo.rpc.Filter;
 import com.alibaba.dubbo.rpc.Invocation;
 import com.alibaba.dubbo.rpc.Invoker;
@@ -202,7 +203,12 @@ public class AccessLogFilter implements Filter {
                 sn.append(PRAMETERS_PREFIX);
                 Object[] args = inv.getArguments();
                 if (args != null && args.length > 0) {
-                    sn.append(JSON.json(args));
+                    String paramJson = JSON.json(args);
+                    // 截取过长的入参内容
+/*                    if (StringUtils.isNotEmpty(paramJson) && paramJson.length() > 2000) {
+                        paramJson = paramJson.substring(0, 2000).concat("...");
+                    }*/
+                    sn.append(paramJson);
                 }
                 sn.append(",");
 
@@ -210,7 +216,12 @@ public class AccessLogFilter implements Filter {
                 sn.append(RETRUN_PREFIX);
                 result = invoker.invoke(inv);
                 if (!result.hasException()) {
-                    sn.append(JSON.json(result.getValue()));
+                    String returnJson = JSON.json(result.getValue());
+                    // 截取过长的返回内容
+                    if (StringUtils.isNotEmpty(returnJson) && returnJson.length() > 2000) {
+                        returnJson = returnJson.substring(0, 2000).concat("...");
+                    }
+                    sn.append(returnJson);
                 }
                 sn.append(",");
 
