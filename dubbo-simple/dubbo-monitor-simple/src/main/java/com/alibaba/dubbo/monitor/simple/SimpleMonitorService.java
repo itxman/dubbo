@@ -23,10 +23,6 @@ import com.alibaba.dubbo.common.utils.ConfigUtils;
 import com.alibaba.dubbo.common.utils.NamedThreadFactory;
 import com.alibaba.dubbo.common.utils.NetUtils;
 import com.alibaba.dubbo.monitor.MonitorService;
-import com.alibaba.dubbo.monitor.simple.dao.MonitorDAO;
-import com.alibaba.dubbo.monitor.simple.entity.CollectMessage;
-import com.xkeshi.core.context.ApplicationContextHelper;
-import org.apache.commons.lang3.StringUtils;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
@@ -86,7 +82,7 @@ public class SimpleMonitorService implements MonitorService {
     public String getStatisticsDirectory() {
         return statisticsDirectory;
     }
-
+    
     public void setStatisticsDirectory(String statistics) {
         if (statistics != null) {
             this.statisticsDirectory = statistics;
@@ -151,7 +147,6 @@ public class SimpleMonitorService implements MonitorService {
     
     private void write() throws Exception {
         URL statistics = queue.take();
-        writeToDatabase(statistics);
         if (POISON_PROTOCOL.equals(statistics.getProtocol())) {
             return;
         }
@@ -211,45 +206,6 @@ public class SimpleMonitorService implements MonitorService {
                 logger.error(t.getMessage(), t);
             }
         }
-    }
-
-    /**
-     * 将统计数据写入数据库
-     *
-     * @param statistics
-     */
-    private void writeToDatabase(URL statistics) {
-        Long elapsed = Long.valueOf(statistics.getParameter(MonitorService.ELAPSED));
-        Integer success = Integer.valueOf(statistics.getParameter(MonitorService.SUCCESS));
-        Integer failure = Integer.valueOf(statistics.getParameter(MonitorService.FAILURE));
-
-        //无调用统计信息不入库
-        if (success == 0 && failure == 0 && elapsed.equals(0l)) {
-            return;
-        }
-
-        MonitorDAO monitorDAO = ApplicationContextHelper.getContext().getBean(MonitorDAO.class);
-        CollectMessage message = new CollectMessage();
-        String providerAddress = statistics.getParameter(MonitorService.PROVIDER);
-        if (StringUtils.isNotEmpty(providerAddress)) {
-            message.setType(MonitorService.PROVIDER);
-            message.setAddress(providerAddress);
-        } else {
-            message.setType(MonitorService.CONSUMER);
-            message.setAddress(statistics.getParameter(MonitorService.CONSUMER));
-        }
-        message.setElapsed((success + failure) == 0 ? elapsed : elapsed / (success + failure));
-        message.setConcurrent(Integer.valueOf(statistics.getParameter(MonitorService.CONCURRENT)));
-        message.setApplication(statistics.getParameter(MonitorService.APPLICATION));
-        message.setService(statistics.getParameter(MonitorService.INTERFACE));
-        message.setMethod(statistics.getParameter(MonitorService.METHOD));
-        message.setInput(statistics.getParameter(MonitorService.INPUT));
-        message.setOutput(statistics.getParameter(MonitorService.OUTPUT));
-        message.setMaxInput(statistics.getParameter(MonitorService.MAX_INPUT));
-        message.setMaxOutput(statistics.getParameter(MonitorService.MAX_OUTPUT));
-        message.setSuccess(success);
-        message.setFailure(failure);
-        monitorDAO.saveMessage(message);
     }
 
     private void draw() {

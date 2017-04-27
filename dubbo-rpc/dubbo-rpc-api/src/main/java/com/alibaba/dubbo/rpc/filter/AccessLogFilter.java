@@ -85,6 +85,8 @@ public class AccessLogFilter implements Filter {
 
     private static final String OTHER_INFO_PREFIX = "OTHER=";
 
+    private static final String RESULT = "RESULT=";
+
     private final ConcurrentMap<String, Set<String>> logQueue = new ConcurrentHashMap<String, Set<String>>();
 
     private final ScheduledExecutorService logScheduled = Executors.newScheduledThreadPool(2,
@@ -215,6 +217,9 @@ public class AccessLogFilter implements Filter {
                 // 拼接出参 -- RETRUN
                 sn.append(RETRUN_PREFIX);
                 result = invoker.invoke(inv);
+
+                boolean execResult = true;
+
                 if (!result.hasException()) {
                     String returnJson = JSON.json(result.getValue());
                     // 截取过长的返回内容
@@ -222,11 +227,22 @@ public class AccessLogFilter implements Filter {
                         returnJson = returnJson.substring(0, 2000).concat("...");
                     }
                     sn.append(returnJson);
+                } else {
+                    Throwable exception = result.getException();
+                    if (exception instanceof RpcException) {
+                        if (((RpcException) exception).getCode() != RpcException.BIZ_EXCEPTION) {
+                            execResult = false;
+                        }
+                    } else {
+                        execResult = false;
+                    }
                 }
                 sn.append(",");
 
                 // 拼接服务调用耗时 -- TIME -- 耗时放在首位
                 sn.insert(0, TIME_PREFIX + (System.currentTimeMillis() - start) + ",");
+                // 拼接执行结果，内部异常算作执行成功
+                sn.append(RESULT).append(execResult).append(",");
 
                 // 拼接其他参数
                 sn.append(OTHER_INFO_PREFIX)
