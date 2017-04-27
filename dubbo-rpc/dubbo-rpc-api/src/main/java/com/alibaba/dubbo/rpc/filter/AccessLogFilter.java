@@ -85,7 +85,7 @@ public class AccessLogFilter implements Filter {
 
     private static final String OTHER_INFO_PREFIX = "OTHER=";
 
-    private static final String RESULT = "SUCCESS=";
+    private static final String SUCCESS = "SUCCESS=";
 
     private final ConcurrentMap<String, Set<String>> logQueue = new ConcurrentHashMap<String, Set<String>>();
 
@@ -242,7 +242,7 @@ public class AccessLogFilter implements Filter {
                 // 拼接服务调用耗时 -- TIME -- 耗时放在首位
                 sn.insert(0, TIME_PREFIX + (System.currentTimeMillis() - start) + ",");
                 // 拼接执行结果，内部异常算作执行成功
-                sn.append(RESULT).append(execResult).append(",");
+                sn.append(SUCCESS).append(execResult).append(",");
 
                 // 拼接其他参数
                 sn.append(OTHER_INFO_PREFIX)
