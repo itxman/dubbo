@@ -85,7 +85,7 @@ public class AccessLogFilter implements Filter {
 
     private static final String OTHER_INFO_PREFIX = "OTHER=";
 
-    private static final String RESULT = "RESULT=";
+    private static final String RESULT = "SUCCESS=";
 
     private final ConcurrentMap<String, Set<String>> logQueue = new ConcurrentHashMap<String, Set<String>>();
 
