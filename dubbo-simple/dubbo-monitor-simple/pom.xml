@@ -136,12 +136,6 @@
 		</dependency>
 
         <dependency>
-            <groupId>com.xkeshi</groupId>
-            <artifactId>xkeshi-framework-core</artifactId>
-            <version>1.0.12</version>
-        </dependency>
-
-        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
             <version>1.0.4</version>
