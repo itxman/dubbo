@@ -64,7 +64,7 @@ import com.alibaba.dubbo.validation.Validator;
 
 /**
  * JValidator
- * 
+ *
  * @author william.liangf
  */
 public class JValidator implements Validator {
@@ -72,7 +72,7 @@ public class JValidator implements Validator {
     private static final Logger logger = LoggerFactory.getLogger(JValidator.class);
 
     private final Class<?> clazz;
-    
+
     private final javax.validation.Validator validator;
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -137,19 +137,19 @@ public class JValidator implements Validator {
             }
         }
     }
-    
+
     private static boolean isPrimitives(Class<?> cls) {
         if (cls.isArray()) {
             return isPrimitive(cls.getComponentType());
         }
         return isPrimitive(cls);
     }
-    
+
     private static boolean isPrimitive(Class<?> cls) {
-        return cls.isPrimitive() || cls == String.class || cls == Boolean.class || cls == Character.class 
+        return cls.isPrimitive() || cls == String.class || cls == Boolean.class || cls == Character.class
                 || Number.class.isAssignableFrom(cls) || Date.class.isAssignableFrom(cls);
     }
-    
+
     private static Object getMethodParameterBean(Class<?> clazz, Method method, Object[] args) {
         if (! hasConstraintParameter(method)) {
             return null;
@@ -199,7 +199,8 @@ public class JValidator implements Validator {
                     ctField.getFieldInfo().addAttribute(attribute);
                     ctClass.addField(ctField);
                 }
-                parameterClass = ctClass.toClass();
+                // 修复'frozen class'异常
+                parameterClass = ctClass.toClass(clazz.getClassLoader(), null);
             }
             Object parameterBean = parameterClass.newInstance();
             for (int i = 0; i < args.length; i ++) {
@@ -230,7 +231,7 @@ public class JValidator implements Validator {
     private static String toUpperMethoName(String methodName) {
         return methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
     }
-    
+
     // Copy from javassist.bytecode.annotation.Annotation.createMemberValue(ConstPool, CtClass);
     private static MemberValue createMemberValue(ConstPool cp, CtClass type, Object value) throws NotFoundException {
         MemberValue memberValue = javassist.bytecode.annotation.Annotation.createMemberValue(cp, type);
@@ -254,7 +255,7 @@ public class JValidator implements Validator {
             ((ClassMemberValue) memberValue).setValue(((Class<?>)value).getName());
         else if (memberValue instanceof StringMemberValue)
             ((StringMemberValue) memberValue).setValue((String) value);
-        else if (memberValue instanceof EnumMemberValue) 
+        else if (memberValue instanceof EnumMemberValue)
             ((EnumMemberValue) memberValue).setValue(((Enum<?>) value).name());
         /* else if (memberValue instanceof AnnotationMemberValue) */
         else if (memberValue instanceof ArrayMemberValue) {
