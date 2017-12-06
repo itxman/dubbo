@@ -18,7 +18,14 @@ package com.alibaba.dubbo.rpc.filter;
 import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.common.extension.Activate;
-import com.alibaba.dubbo.rpc.*;
+import com.alibaba.dubbo.rpc.Filter;
+import com.alibaba.dubbo.rpc.Invocation;
+import com.alibaba.dubbo.rpc.Invoker;
+import com.alibaba.dubbo.rpc.Result;
+import com.alibaba.dubbo.rpc.RpcException;
+import com.alibaba.dubbo.rpc.RpcStatus;
+
+import java.util.concurrent.Semaphore;
 
 /**
  * ThreadLimitInvokerFilter
@@ -31,28 +38,40 @@ public class ExecuteLimitFilter implements Filter {
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
         URL url = invoker.getUrl();
         String methodName = invocation.getMethodName();
+        Semaphore executesLimit = null;
+        boolean acquireResult = false;
         int max = url.getMethodParameter(methodName, Constants.EXECUTES_KEY, 0);
         if (max > 0) {
             RpcStatus count = RpcStatus.getStatus(url, invocation.getMethodName());
-            if (count.getActive() >= max) {
-                throw new RpcException(
-                        "Failed to invoke method " + invocation.getMethodName() + " in provider " + url + ", cause: The service using threads greater than <dubbo:service executes=\"" + max + "\" /> limited.");
+//            if (count.getActive() >= max) {
+            /**
+             * http://manzhizhen.iteye.com/blog/2386408
+             * 通过信号量来做并发控制（即限制能使用的线程数量）
+             * 2017-08-21 yizhenqiang
+             */
+            executesLimit = count.getSemaphore(max);
+            if(executesLimit != null && !(acquireResult = executesLimit.tryAcquire())) {
+                throw new RpcException("Failed to invoke method " + invocation.getMethodName() + " in provider " + url + ", cause: The service using threads greater than <dubbo:service executes=\"" + max + "\" /> limited.");
             }
         }
         long begin = System.currentTimeMillis();
-        boolean succeeded = true;
+        boolean isSuccess = true;
         RpcStatus.beginCount(url, methodName);
         try {
-            return invoker.invoke(invocation);
+            Result result = invoker.invoke(invocation);
+            return result;
         } catch (Throwable t) {
-            succeeded = false;
+            isSuccess = false;
             if (t instanceof RuntimeException) {
                 throw (RuntimeException) t;
             } else {
                 throw new RpcException("unexpected exception when ExecuteLimitFilter", t);
             }
         } finally {
-            RpcStatus.endCount(url, methodName, System.currentTimeMillis() - begin, succeeded);
+            RpcStatus.endCount(url, methodName, System.currentTimeMillis() - begin, isSuccess);
+            if(acquireResult) {
+                executesLimit.release();
+            }
         }
     }
 

@@ -15,6 +15,22 @@
  */
 package com.alibaba.dubbo.rpc.filter;
 
+import com.alibaba.dubbo.common.Constants;
+import com.alibaba.dubbo.common.extension.Activate;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.dubbo.common.logger.Logger;
+import com.alibaba.dubbo.common.logger.LoggerFactory;
+import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
+import com.alibaba.dubbo.common.utils.ConfigUtils;
+import com.alibaba.dubbo.common.utils.NamedThreadFactory;
+import com.alibaba.dubbo.common.utils.StringUtils;
+import com.alibaba.dubbo.rpc.Filter;
+import com.alibaba.dubbo.rpc.Invocation;
+import com.alibaba.dubbo.rpc.Invoker;
+import com.alibaba.dubbo.rpc.Result;
+import com.alibaba.dubbo.rpc.RpcContext;
+import com.alibaba.dubbo.rpc.RpcException;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.text.SimpleDateFormat;
@@ -28,22 +44,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-
-import com.alibaba.dubbo.common.Constants;
-import com.alibaba.dubbo.common.extension.Activate;
-import com.alibaba.dubbo.common.json.JSON;
-import com.alibaba.dubbo.common.logger.Logger;
-import com.alibaba.dubbo.common.logger.LoggerFactory;
-import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
-import com.alibaba.dubbo.common.utils.ConfigUtils;
-import com.alibaba.dubbo.common.utils.NamedThreadFactory;
-import com.alibaba.dubbo.common.utils.StringUtils;
-import com.alibaba.dubbo.rpc.Filter;
-import com.alibaba.dubbo.rpc.Invocation;
-import com.alibaba.dubbo.rpc.Invoker;
-import com.alibaba.dubbo.rpc.Result;
-import com.alibaba.dubbo.rpc.RpcContext;
-import com.alibaba.dubbo.rpc.RpcException;
 
 /**
  * 记录Service的Access Log。
@@ -93,54 +93,6 @@ public class AccessLogFilter implements Filter {
             new NamedThreadFactory("Dubbo-Access-Log", true));
 
     private volatile ScheduledFuture<?> logFuture = null;
-
-    private class LogTask implements Runnable {
-        public void run() {
-            try {
-                if (logQueue != null && logQueue.size() > 0) {
-                    for (Map.Entry<String, Set<String>> entry : logQueue.entrySet()) {
-                        try {
-                            String accesslog = entry.getKey();
-                            Set<String> logSet = entry.getValue();
-                            File file = new File(accesslog);
-                            File dir = file.getParentFile();
-                            if (null != dir && !dir.exists()) {
-                                dir.mkdirs();
-                            }
-                            if (logger.isDebugEnabled()) {
-                                logger.debug("Append log to " + accesslog);
-                            }
-                            if (file.exists()) {
-                                String now = new SimpleDateFormat(FILE_DATE_FORMAT).format(new Date());
-                                String last = new SimpleDateFormat(FILE_DATE_FORMAT).format(
-                                        new Date(file.lastModified()));
-                                if (!now.equals(last)) {
-                                    File archive = new File(file.getAbsolutePath() + "." + last);
-                                    file.renameTo(archive);
-                                }
-                            }
-                            FileWriter writer = new FileWriter(file, true);
-                            try {
-                                for (Iterator<String> iterator = logSet.iterator();
-                                     iterator.hasNext();
-                                     iterator.remove()) {
-                                    writer.write(iterator.next());
-                                    writer.write("\r\n");
-                                }
-                                writer.flush();
-                            } finally {
-                                writer.close();
-                            }
-                        } catch (Exception e) {
-                            logger.error(e.getMessage(), e);
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
-    }
 
     private void init() {
         if (logFuture == null) {
@@ -205,11 +157,7 @@ public class AccessLogFilter implements Filter {
                 sn.append(PRAMETERS_PREFIX);
                 Object[] args = inv.getArguments();
                 if (args != null && args.length > 0) {
-                    String paramJson = JSON.json(args);
-                    // 截取过长的入参内容
-/*                    if (StringUtils.isNotEmpty(paramJson) && paramJson.length() > 2000) {
-                        paramJson = paramJson.substring(0, 2000).concat("...");
-                    }*/
+                    String paramJson = JSON.toJSONString(args);
                     sn.append(paramJson);
                 }
                 sn.append(",");
@@ -221,7 +169,7 @@ public class AccessLogFilter implements Filter {
                 boolean execResult = true;
 
                 if (!result.hasException()) {
-                    String returnJson = JSON.json(result.getValue());
+                    String returnJson = JSON.toJSONString(result.getValue());
                     // 截取过长的返回内容
                     if (StringUtils.isNotEmpty(returnJson) && returnJson.length() > 2000) {
                         returnJson = returnJson.substring(0, 2000).concat("...");
@@ -275,6 +223,53 @@ public class AccessLogFilter implements Filter {
             }
         }
         return result;
+    }
+
+    private class LogTask implements Runnable {
+        public void run() {
+            try {
+                if (logQueue != null && logQueue.size() > 0) {
+                    for (Map.Entry<String, Set<String>> entry : logQueue.entrySet()) {
+                        try {
+                            String accesslog = entry.getKey();
+                            Set<String> logSet = entry.getValue();
+                            File file = new File(accesslog);
+                            File dir = file.getParentFile();
+                            if (null != dir && !dir.exists()) {
+                                dir.mkdirs();
+                            }
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Append log to " + accesslog);
+                            }
+                            if (file.exists()) {
+                                String now = new SimpleDateFormat(FILE_DATE_FORMAT).format(new Date());
+                                String last = new SimpleDateFormat(FILE_DATE_FORMAT).format(new Date(file.lastModified()));
+                                if (!now.equals(last)) {
+                                    File archive = new File(file.getAbsolutePath() + "." + last);
+                                    file.renameTo(archive);
+                                }
+                            }
+                            FileWriter writer = new FileWriter(file, true);
+                            try {
+                                for (Iterator<String> iterator = logSet.iterator();
+                                     iterator.hasNext();
+                                     iterator.remove()) {
+                                    writer.write(iterator.next());
+                                    writer.write("\r\n");
+                                }
+                                writer.flush();
+                            } finally {
+                                writer.close();
+                            }
+                        } catch (Exception e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
     }
 
 }
