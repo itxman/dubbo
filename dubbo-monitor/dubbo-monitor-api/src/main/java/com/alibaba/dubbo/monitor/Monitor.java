@@ -21,7 +21,7 @@ import com.alibaba.dubbo.common.Node;
  * Monitor. (SPI, Prototype, ThreadSafe)
  *
  * @author william.liangf
- * @see com.alibaba.dubbo.monitor.MonitorFactory#getMonitor(com.alibaba.dubbo.common.URL)
+ * @see MonitorFactory#getMonitor(com.alibaba.dubbo.common.URL)
  */
 public interface Monitor extends Node, MonitorService {
 
