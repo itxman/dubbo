@@ -31,8 +31,8 @@ import java.util.Arrays;
  *
  * @author william.liangf
  * @export
- * @see com.alibaba.dubbo.config.ProtocolConfig
- * @see com.alibaba.dubbo.config.ServiceConfig
+ * @see ProtocolConfig
+ * @see ServiceConfig
  */
 public class ProviderConfig extends AbstractServiceConfig {
 

@@ -156,7 +156,7 @@ abstract class AbstractAnnotationConfigBeanBuilder<A extends Annotation, B exten
 
 
     /**
-     * Resolves the bean ids of {@link com.alibaba.dubbo.config.RegistryConfig}
+     * Resolves the bean ids of {@link RegistryConfig}
      *
      * @param annotation {@link A}
      * @return non-empty array

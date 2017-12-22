@@ -381,7 +381,7 @@ class Entities {
     }
 
     // package scoped for testing
-    EntityMap map = new Entities.LookupEntityMap();
+    EntityMap map = new LookupEntityMap();
 
     /**
      * <p>
@@ -703,7 +703,7 @@ class Entities {
         }
     }
 
-    static abstract class MapIntMap implements Entities.EntityMap {
+    static abstract class MapIntMap implements EntityMap {
         protected Map mapNameToValue;
 
         protected Map mapValueToName;

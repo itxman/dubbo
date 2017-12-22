@@ -32,7 +32,7 @@ import java.util.List;
  *
  * @author qian.lei
  * @author william.liangf
- * @see com.alibaba.dubbo.rpc.cluster.Cluster#join(Directory)
+ * @see Cluster#join(Directory)
  */
 @SPI(RandomLoadBalance.NAME)
 public interface LoadBalance {

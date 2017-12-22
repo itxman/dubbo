@@ -51,14 +51,14 @@ public class LoadBalanceTest {
     Invoker<LoadBalanceTest> invoker5;
 
     /**
-     * @throws java.lang.Exception
+     * @throws Exception
      */
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
     }
 
     /**
-     * @throws java.lang.Exception
+     * @throws Exception
      */
     @Before
     public void setUp() throws Exception {

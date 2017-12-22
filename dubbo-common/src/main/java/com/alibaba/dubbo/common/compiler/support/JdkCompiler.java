@@ -1,12 +1,13 @@
 /*
- * Copyright 1999-2011 Alibaba Group.
- *  
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *  
- *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -51,8 +52,6 @@ import java.util.Set;
 
 /**
  * JdkCompiler. (SPI, Singleton, ThreadSafe)
- *
- * @author william.liangf
  */
 public class JdkCompiler extends AbstractCompiler {
 
@@ -188,7 +187,7 @@ public class JdkCompiler extends AbstractCompiler {
         }
 
         @Override
-        public ClassLoader getClassLoader(JavaFileManager.Location location) {
+        public ClassLoader getClassLoader(Location location) {
             return classLoader;
         }
 
@@ -213,7 +212,7 @@ public class JdkCompiler extends AbstractCompiler {
 
             ArrayList<JavaFileObject> files = new ArrayList<JavaFileObject>();
 
-            if (location == StandardLocation.CLASS_PATH && kinds.contains(JavaFileObject.Kind.CLASS)) {
+            if (location == StandardLocation.CLASS_PATH && kinds.contains(Kind.CLASS)) {
                 for (JavaFileObject file : fileObjects.values()) {
                     if (file.getKind() == Kind.CLASS && file.getName().startsWith(packageName)) {
                         files.add(file);
@@ -221,7 +220,7 @@ public class JdkCompiler extends AbstractCompiler {
                 }
 
                 files.addAll(classLoader.files());
-            } else if (location == StandardLocation.SOURCE_PATH && kinds.contains(JavaFileObject.Kind.SOURCE)) {
+            } else if (location == StandardLocation.SOURCE_PATH && kinds.contains(Kind.SOURCE)) {
                 for (JavaFileObject file : fileObjects.values()) {
                     if (file.getKind() == Kind.SOURCE && file.getName().startsWith(packageName)) {
                         files.add(file);

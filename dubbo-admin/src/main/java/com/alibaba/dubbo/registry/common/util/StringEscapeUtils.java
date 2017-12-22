@@ -95,7 +95,7 @@ public class StringEscapeUtils {
      * @param str String to escape values in, may be null
      * @throws IllegalArgumentException if the Writer is <code>null</code>
      * @throws IOException              if error occurs on underlying Writer
-     * @see #escapeJava(java.lang.String)
+     * @see #escapeJava(String)
      */
     public static void escapeJava(Writer out, String str) throws IOException {
         escapeJavaStyleString(out, str, false);
@@ -136,7 +136,7 @@ public class StringEscapeUtils {
      * @param str String to escape values in, may be null
      * @throws IllegalArgumentException if the Writer is <code>null</code>
      * @throws IOException              if error occurs on underlying Writer
-     * @see #escapeJavaScript(java.lang.String)
+     * @see #escapeJavaScript(String)
      **/
     public static void escapeJavaScript(Writer out, String str) throws IOException {
         escapeJavaStyleString(out, str, true);
@@ -580,7 +580,7 @@ public class StringEscapeUtils {
      * @param str    the <code>String</code> to escape, may be null
      * @throws IllegalArgumentException if the writer is null
      * @throws IOException              if there is a problem writing
-     * @see #unescapeXml(java.lang.String)
+     * @see #unescapeXml(String)
      */
     public static void escapeXml(Writer writer, String str) throws IOException {
         if (writer == null) {
@@ -607,7 +607,7 @@ public class StringEscapeUtils {
      *
      * @param str the <code>String</code> to escape, may be null
      * @return a new escaped <code>String</code>, <code>null</code> if null string input
-     * @see #unescapeXml(java.lang.String)
+     * @see #unescapeXml(String)
      */
     public static String escapeXml(String str) {
         if (str == null) {

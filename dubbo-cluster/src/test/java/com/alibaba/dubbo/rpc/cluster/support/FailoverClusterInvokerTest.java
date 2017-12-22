@@ -57,7 +57,7 @@ public class FailoverClusterInvokerTest {
     Result result = new RpcResult();
 
     /**
-     * @throws java.lang.Exception
+     * @throws Exception
      */
 
     @Before

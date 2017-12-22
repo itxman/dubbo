@@ -115,7 +115,7 @@ public class RouteRuleUtils {
     public static boolean isMatchCondition(Map<String, RouteRule.MatchPair> condition,
                                            Map<String, String> valueParams, Map<String, String> kv) {
         if (condition != null && condition.size() > 0) {
-            for (Map.Entry<String, RouteRule.MatchPair> entry : condition.entrySet()) {
+            for (Entry<String, RouteRule.MatchPair> entry : condition.entrySet()) {
                 String condName = entry.getKey();
                 RouteRule.MatchPair p = entry.getValue();
                 String value = kv.get(condName);

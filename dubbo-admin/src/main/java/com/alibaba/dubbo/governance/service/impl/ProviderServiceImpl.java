@@ -246,9 +246,9 @@ public class ProviderServiceImpl extends AbstractService implements ProviderServ
         ConcurrentMap<String, Map<Long, URL>> providerUrls = getRegistryCache().get(Constants.PROVIDERS_CATEGORY);
         if (null == providerUrls) return ret;
 
-        for (Map.Entry<String, Map<Long, URL>> e1 : providerUrls.entrySet()) {
+        for (Entry<String, Map<Long, URL>> e1 : providerUrls.entrySet()) {
             Map<Long, URL> value = e1.getValue();
-            for (Map.Entry<Long, URL> e2 : value.entrySet()) {
+            for (Entry<Long, URL> e2 : value.entrySet()) {
                 URL u = e2.getValue();
                 String app = u.getAddress();
                 if (app != null) ret.add(app);
@@ -261,9 +261,9 @@ public class ProviderServiceImpl extends AbstractService implements ProviderServ
     public List<String> findAddressesByApplication(String application) {
         List<String> ret = new ArrayList<String>();
         ConcurrentMap<String, Map<Long, URL>> providerUrls = getRegistryCache().get(Constants.PROVIDERS_CATEGORY);
-        for (Map.Entry<String, Map<Long, URL>> e1 : providerUrls.entrySet()) {
+        for (Entry<String, Map<Long, URL>> e1 : providerUrls.entrySet()) {
             Map<Long, URL> value = e1.getValue();
-            for (Map.Entry<Long, URL> e2 : value.entrySet()) {
+            for (Entry<Long, URL> e2 : value.entrySet()) {
                 URL u = e2.getValue();
                 if (application.equals(u.getParameter(Constants.APPLICATION_KEY))) {
                     String addr = u.getAddress();
@@ -280,7 +280,7 @@ public class ProviderServiceImpl extends AbstractService implements ProviderServ
         ConcurrentMap<String, Map<Long, URL>> providerUrls = getRegistryCache().get(Constants.PROVIDERS_CATEGORY);
         if (null == providerUrls) return ret;
 
-        for (Map.Entry<Long, URL> e2 : providerUrls.get(service).entrySet()) {
+        for (Entry<Long, URL> e2 : providerUrls.get(service).entrySet()) {
             URL u = e2.getValue();
             String app = u.getAddress();
             if (app != null) ret.add(app);
@@ -298,7 +298,7 @@ public class ProviderServiceImpl extends AbstractService implements ProviderServ
         if (value == null) {
             return ret;
         }
-        for (Map.Entry<Long, URL> e2 : value.entrySet()) {
+        for (Entry<Long, URL> e2 : value.entrySet()) {
             URL u = e2.getValue();
             String app = u.getParameter(Constants.APPLICATION_KEY);
             if (app != null) ret.add(app);
@@ -347,9 +347,9 @@ public class ProviderServiceImpl extends AbstractService implements ProviderServ
         ConcurrentMap<String, Map<Long, URL>> providerUrls = getRegistryCache().get(Constants.PROVIDERS_CATEGORY);
         if (providerUrls == null || address == null || address.length() == 0) return ret;
 
-        for (Map.Entry<String, Map<Long, URL>> e1 : providerUrls.entrySet()) {
+        for (Entry<String, Map<Long, URL>> e1 : providerUrls.entrySet()) {
             Map<Long, URL> value = e1.getValue();
-            for (Map.Entry<Long, URL> e2 : value.entrySet()) {
+            for (Entry<Long, URL> e2 : value.entrySet()) {
                 URL u = e2.getValue();
                 if (address.equals(u.getAddress())) {
                     ret.add(e1.getKey());
@@ -366,9 +366,9 @@ public class ProviderServiceImpl extends AbstractService implements ProviderServ
         ConcurrentMap<String, Map<Long, URL>> providerUrls = getRegistryCache().get(Constants.PROVIDERS_CATEGORY);
         if (providerUrls == null) return ret;
 
-        for (Map.Entry<String, Map<Long, URL>> e1 : providerUrls.entrySet()) {
+        for (Entry<String, Map<Long, URL>> e1 : providerUrls.entrySet()) {
             Map<Long, URL> value = e1.getValue();
-            for (Map.Entry<Long, URL> e2 : value.entrySet()) {
+            for (Entry<Long, URL> e2 : value.entrySet()) {
                 URL u = e2.getValue();
                 String app = u.getParameter(Constants.APPLICATION_KEY);
                 if (app != null) ret.add(app);
@@ -395,9 +395,9 @@ public class ProviderServiceImpl extends AbstractService implements ProviderServ
         ConcurrentMap<String, Map<Long, URL>> providerUrls = getRegistryCache().get(Constants.PROVIDERS_CATEGORY);
         if (providerUrls == null || application == null || application.length() == 0) return ret;
 
-        for (Map.Entry<String, Map<Long, URL>> e1 : providerUrls.entrySet()) {
+        for (Entry<String, Map<Long, URL>> e1 : providerUrls.entrySet()) {
             Map<Long, URL> value = e1.getValue();
-            for (Map.Entry<Long, URL> e2 : value.entrySet()) {
+            for (Entry<Long, URL> e2 : value.entrySet()) {
                 URL u = e2.getValue();
                 if (application.equals(u.getParameter(Constants.APPLICATION_KEY))) {
                     ret.add(e1.getKey());

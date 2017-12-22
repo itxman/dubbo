@@ -41,7 +41,7 @@ public class Status {
         Map<String, com.alibaba.dubbo.common.status.Status> statuses = StatusManager.getInstance().getStatusList(new String[]{"cache"});
         com.alibaba.dubbo.common.status.Status status = StatusManager.getInstance().getStatusSummary(statuses);
         Level level = status.getLevel();
-        if (!com.alibaba.dubbo.common.status.Status.Level.OK.equals(level)) {
+        if (!Level.OK.equals(level)) {
             context.put("message", level
                     + new SimpleDateFormat(" [yyyy-MM-dd HH:mm:ss] ").format(new Date())
                     + filterOK(status.getMessage()));

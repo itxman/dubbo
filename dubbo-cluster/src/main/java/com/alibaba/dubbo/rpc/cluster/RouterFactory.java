@@ -26,8 +26,8 @@ import com.alibaba.dubbo.rpc.Invocation;
  * <a href="http://en.wikipedia.org/wiki/Routing">Routing</a>
  *
  * @author chao.liuc
- * @see com.alibaba.dubbo.rpc.cluster.Cluster#join(Directory)
- * @see com.alibaba.dubbo.rpc.cluster.Directory#list(Invocation)
+ * @see Cluster#join(Directory)
+ * @see Directory#list(Invocation)
  */
 @SPI
 public interface RouterFactory {

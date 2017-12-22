@@ -286,7 +286,7 @@ public class ParameterMap implements Map<String, Object> {
 
     public void putAll(Map<? extends String, ? extends Object> map) {
         if (map != null && map.size() > 0) {
-            for (Map.Entry<? extends String, ? extends Object> entry : map.entrySet()) {
+            for (Entry<? extends String, ? extends Object> entry : map.entrySet()) {
                 put(entry.getKey(), entry.getValue());
             }
         }

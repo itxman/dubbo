@@ -35,7 +35,7 @@ public class Unregister extends Shell {
         if (params == null || params.size() == 0) {
             throw new IllegalArgumentException("The url parameters is null! Usage: " + request.getRequestURL().toString() + "?com.xxx.XxxService=http://" + operatorAddress + "/xxxService");
         }
-        for (Map.Entry<String, String[]> entry : params.entrySet()) {
+        for (Entry<String, String[]> entry : params.entrySet()) {
             if (entry.getKey() != null && entry.getKey().length() > 0
                     && entry.getValue() != null && entry.getValue().length > 0
                     && entry.getValue()[0] != null && entry.getValue()[0].length() > 0) {

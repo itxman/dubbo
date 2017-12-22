@@ -151,7 +151,7 @@ public class RegistryConfig extends AbstractConfig {
 
     /**
      * @return wait
-     * @see com.alibaba.dubbo.config.ProviderConfig#getWait()
+     * @see ProviderConfig#getWait()
      * @deprecated
      */
     @Deprecated
@@ -161,7 +161,7 @@ public class RegistryConfig extends AbstractConfig {
 
     /**
      * @param wait
-     * @see com.alibaba.dubbo.config.ProviderConfig#setWait(Integer)
+     * @see ProviderConfig#setWait(Integer)
      * @deprecated
      */
     @Deprecated

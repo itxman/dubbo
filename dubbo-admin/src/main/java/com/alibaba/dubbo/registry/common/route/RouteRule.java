@@ -60,10 +60,10 @@ public class RouteRule {
 
     // FIXME 集合都要加上unmodified的Wrapper，避免构造后的对象被修改
     private RouteRule(Map<String, MatchPair> when, Map<String, MatchPair> then) {
-        for (Map.Entry<String, MatchPair> entry : when.entrySet()) {
+        for (Entry<String, MatchPair> entry : when.entrySet()) {
             entry.getValue().freeze();
         }
-        for (Map.Entry<String, MatchPair> entry : then.entrySet()) {
+        for (Entry<String, MatchPair> entry : then.entrySet()) {
             entry.getValue().freeze();
         }
 
@@ -74,7 +74,7 @@ public class RouteRule {
 
     public static Map<String, MatchPair> parseRule(String rule)
             throws ParseException {
-        Map<String, MatchPair> condition = new HashMap<String, RouteRule.MatchPair>();
+        Map<String, MatchPair> condition = new HashMap<String, MatchPair>();
         if (StringUtils.isBlank(rule)) {
             return condition;
         }
@@ -197,7 +197,7 @@ public class RouteRule {
     }
 
     static Map<String, MatchPair> parseNameAndValueListString2Condition(Map<String, String> params, Map<String, String> notParams) {
-        Map<String, MatchPair> condition = new HashMap<String, RouteRule.MatchPair>();
+        Map<String, MatchPair> condition = new HashMap<String, MatchPair>();
 
         for (Entry<String, String> entry : params.entrySet()) {
             String valueListString = entry.getValue();
@@ -268,14 +268,14 @@ public class RouteRule {
     }
 
     public static RouteRule copyWithRemove(RouteRule copy, Set<String> whenParams, Set<String> thenParams) {
-        Map<String, MatchPair> when = new HashMap<String, RouteRule.MatchPair>();
+        Map<String, MatchPair> when = new HashMap<String, MatchPair>();
         for (Entry<String, MatchPair> entry : copy.getWhenCondition().entrySet()) {
             if (whenParams == null || !whenParams.contains(entry.getKey())) {
                 when.put(entry.getKey(), entry.getValue());
             }
         }
 
-        Map<String, MatchPair> then = new HashMap<String, RouteRule.MatchPair>();
+        Map<String, MatchPair> then = new HashMap<String, MatchPair>();
         for (Entry<String, MatchPair> entry : copy.getThenCondition().entrySet()) {
             if (thenParams == null || !thenParams.contains(entry.getKey())) {
                 then.put(entry.getKey(), entry.getValue());
@@ -298,13 +298,13 @@ public class RouteRule {
             throw new NullPointerException("Argument copy is null!");
         }
 
-        Map<String, MatchPair> when = new HashMap<String, RouteRule.MatchPair>();
+        Map<String, MatchPair> when = new HashMap<String, MatchPair>();
         when.putAll(copy.getWhenCondition());
         if (whenCondition != null) {
             when.putAll(whenCondition);
         }
 
-        Map<String, MatchPair> then = new HashMap<String, RouteRule.MatchPair>();
+        Map<String, MatchPair> then = new HashMap<String, MatchPair>();
         then.putAll(copy.getThenCondition());
         if (thenCondition != null) {
             then.putAll(thenCondition);
@@ -337,7 +337,7 @@ public class RouteRule {
      */
     public static boolean matchCondition(Map<String, String> sample,
                                          Map<String, MatchPair> condition) {
-        for (Map.Entry<String, String> entry : sample.entrySet()) {
+        for (Entry<String, String> entry : sample.entrySet()) {
             String key = entry.getKey();
 
             MatchPair pair = condition.get(key);
