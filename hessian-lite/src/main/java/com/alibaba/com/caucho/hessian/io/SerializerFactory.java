@@ -168,9 +168,9 @@ public class SerializerFactory extends AbstractSerializerFactory {
         _staticSerializerMap.put(java.sql.Time.class, new SqlDateSerializer());
         _staticSerializerMap.put(java.sql.Timestamp.class, new SqlDateSerializer());
 
-        _staticSerializerMap.put(java.io.InputStream.class,
+        _staticSerializerMap.put(InputStream.class,
                 new InputStreamSerializer());
-        _staticDeserializerMap.put(java.io.InputStream.class,
+        _staticDeserializerMap.put(InputStream.class,
                 new InputStreamDeserializer());
 
         try {
