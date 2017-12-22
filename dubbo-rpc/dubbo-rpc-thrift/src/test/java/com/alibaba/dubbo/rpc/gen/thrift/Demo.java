@@ -302,7 +302,7 @@ public class Demo {
             }
 
             public boolean getResult() throws org.apache.thrift.TException {
-                if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+                if (getState() != State.RESPONSE_READ) {
                     throw new IllegalStateException("Method call not finished!");
                 }
                 org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
@@ -328,7 +328,7 @@ public class Demo {
             }
 
             public byte getResult() throws org.apache.thrift.TException {
-                if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+                if (getState() != State.RESPONSE_READ) {
                     throw new IllegalStateException("Method call not finished!");
                 }
                 org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
@@ -354,7 +354,7 @@ public class Demo {
             }
 
             public short getResult() throws org.apache.thrift.TException {
-                if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+                if (getState() != State.RESPONSE_READ) {
                     throw new IllegalStateException("Method call not finished!");
                 }
                 org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
@@ -380,7 +380,7 @@ public class Demo {
             }
 
             public int getResult() throws org.apache.thrift.TException {
-                if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+                if (getState() != State.RESPONSE_READ) {
                     throw new IllegalStateException("Method call not finished!");
                 }
                 org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
@@ -406,7 +406,7 @@ public class Demo {
             }
 
             public long getResult() throws org.apache.thrift.TException {
-                if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+                if (getState() != State.RESPONSE_READ) {
                     throw new IllegalStateException("Method call not finished!");
                 }
                 org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
@@ -432,7 +432,7 @@ public class Demo {
             }
 
             public double getResult() throws org.apache.thrift.TException {
-                if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+                if (getState() != State.RESPONSE_READ) {
                     throw new IllegalStateException("Method call not finished!");
                 }
                 org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
@@ -458,7 +458,7 @@ public class Demo {
             }
 
             public String getResult() throws org.apache.thrift.TException {
-                if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+                if (getState() != State.RESPONSE_READ) {
                     throw new IllegalStateException("Method call not finished!");
                 }
                 org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());

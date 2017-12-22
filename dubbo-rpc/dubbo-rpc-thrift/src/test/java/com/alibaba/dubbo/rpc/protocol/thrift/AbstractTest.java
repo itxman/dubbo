@@ -111,7 +111,7 @@ public abstract class AbstractTest {
     protected TProcessor getProcessor() {
         MultiServiceProcessor result = new MultiServiceProcessor();
         result.addProcessor(
-                com.alibaba.dubbo.rpc.gen.dubbo.Demo.class,
+                Demo.class,
                 new $__DemoStub.Processor(getServiceImpl()));
         return result;
     }

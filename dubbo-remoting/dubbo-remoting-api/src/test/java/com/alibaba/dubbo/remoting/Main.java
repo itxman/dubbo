@@ -1,12 +1,13 @@
 /*
- * Copyright 1999-2011 Alibaba Group.
- *  
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *  
- *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -59,7 +60,7 @@ public class Main {
             StringBuilder sb = new StringBuilder();
             for (int j = 0; j < i * 100; j++)
                 sb.append("(" + random.nextLong() + ")");
-            Main.Data d = new Main.Data();
+            Data d = new Data();
             d.setData(sb.toString());
             client.request(d).get();
         }
@@ -89,11 +90,11 @@ public class Main {
             client.request(new RpcMessage(DemoService.class.getName(), "sayHello", new Class<?>[]{String.class}, new Object[]{"qianlei" + i}));
 
         for (int i = 0; i < 100; i++)
-            client.request(new Main.Data());
+            client.request(new Data());
 
         System.out.println("=====test invoke=====");
         for (int i = 0; i < 100; i++) {
-            ResponseFuture future = client.request(new Main.Data());
+            ResponseFuture future = client.request(new Data());
             System.out.println("invoke and get");
             System.out.println("invoke result:" + future.get());
         }
